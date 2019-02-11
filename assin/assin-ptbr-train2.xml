@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entailment-corpus>
+    <pair entailment="None" id="1" similarity="2.0">
+        <t>A gente faz 25 o aporte financeiro, é como se a empresa fosse parceira do Monte Cristo.</t>
+        <h>Fernando Moraes afirma que não tem vínculo com o Monte Cristo além da parceira.</h>
+    </pair>
+    <pair entailment="None" id="2" similarity="2.25">
+        <t>Em 2013, a história de como Walt Disney convenceu P.L.</t>
+        <h>P.L.Travers era completamente contra a adaptação de Walt Disney.</h>
+    </pair>
+   <pair entailment="None" id="3" similarity="3.75">
+        <t>David Silva bateu escanteio, Kompany escalou as costas de Chiellini e o zagueiro marcou contra.</t>
+        <h>David Silva cobrou escanteio, o zagueiro se apoiou em Chiellini e cabeceou.</h>
+    </pair>
+    <pair entailment="None" id="4" similarity="2.75">
+        <t>Para os ambientalistas, as metas anunciadas pela presidente Dilma foram um avanço.</t>
+        <h>Dilma aproveitou seu discurso ontem, na Conferência de Desenvolvimento Sustentável pós-2015 para anunciar desde já essas metas.</h>
+    </pair>
+    <pair entailment="None" id="5" similarity="2.0">
+        <t>De acordo com a PM, por volta das 10h30 havia 2 mil militantes no local.</t>
+        <h>O protesto encerrou por volta de 12h15 (horário local).</h>
+    </pair>
+    <pair entailment="None" id="6" similarity="3.0">
+        <t>A programação entra em cartaz nesta quinta-feira (24) e segue até a próxima quarta-feira (30).</t>
+        <h>A animação “Hotel Transilvânia 2” entra em cartaz nos cinemas da Paraíba nesta quinta-feira (24).</h>
+    </pair>
+    <pair entailment="None" id="7" similarity="2.25">
+        <t>Claudia Leitte, porém, ainda não escolheu o ajudante.</t>
+        <h>Somente Claudia Leitte não concordou plenamente com o colega.</h>
+    </pair>
+     <pair entailment="None" id="8" similarity="2.0">
+        <t>As informações são da Superintendência de Trânsito e Transporte de Salvador (Transalvador).</t>
+        <h>Ainda segundo a Transalvador, não há informações sobre o estado de saúde dela.</h>
+    </pair>
+    <pair entailment="None" id="9" similarity="2.25">
+        <t>Os sintomas da zika vírus, dengue e febre chikungunyia, são parecidos.</t>
+        <h>Foram registrados 316 casos suspeitos de Febre Chikungunya.</h>
+    </pair>
+    <pair entailment="Paraphrase" id="10" similarity="5.0">
+        <t>Tenho orgulho de ter feito parte da construção do PSOL.</t>
+        <h>Ajudei a construir o PSOL, e disso muito me orgulho.</h>
+    </pair>
+</entailment-corpus>
