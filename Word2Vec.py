@@ -2,27 +2,32 @@
 import gensim
 import numpy as np
 from scipy import spatial
+import string
 import nltk
 nltk.download('averaged_perceptron_tagger')
 
 def startModel():
     print("reading model")
-    model = gensim.models.KeyedVectors.load_word2vec_format('cbow_s50.txt')
+    model = gensim.models.KeyedVectors.load_word2vec_format("cbow_s50.txt")
     word_vectors = model.wv
     print("read complete")
     return word_vectors, model
 
-def calculateSimilarity(word_vectors, sentence1, sentence2):
+def calculateSimilarity(word_vectors, model, words1, words2):
+
+    sentence1 = converteStringToVector(words1)
+    sentence2 = converteStringToVector(words2)
+
     if isinstance(sentence1, float) or isinstance(sentence2, float):
         return 0
     else:
         if(len(sentence1) > len(sentence2)):
-            return tableSimilarity(word_vectors, sentence2, sentence1)
+            return tableSimilarity(word_vectors, model, sentence2, sentence1)
         else:
-            return tableSimilarity(word_vectors, sentence1, sentence2)
+            return tableSimilarity(word_vectors, model, sentence1, sentence2)
 
 
-def wordOrderSimilarity(word_vectors, sent1, sent2):
+def wordOrderSimilarity(word_vectors, model, sent1, sent2):
 
     similarity = 0
     cont = 0
@@ -47,7 +52,7 @@ def wordOrderSimilarity(word_vectors, sent1, sent2):
     for i in range(len(vb1)):
         sim = []
         for j in range(len(vb2)):
-            sim.append(tableSimilarity(word_vectors, vb1[i], vb2[j]))
+            sim.append(tableSimilarity(word_vectors, model, vb1[i], vb2[j]))
 
         if len(sim) > 0:
             position = np.argmax(np.asarray(sim))
@@ -58,7 +63,7 @@ def wordOrderSimilarity(word_vectors, sent1, sent2):
     for i in range(len(nn1)):
         sim = []
         for j in range(len(nn2)):
-            sim.append(tableSimilarity(word_vectors, nn1[i], nn2[j]))
+            sim.append(tableSimilarity(word_vectors, model, nn1[i], nn2[j]))
 
         if len(sim) > 0:
             position = np.argmax(np.asarray(sim))
@@ -114,16 +119,19 @@ def normalizedLevenshtein(sentence1, sentence2):
 
     sim = levenshtein(sentence1, sentence2)
     similarity = 0
-
-    if(len(sentence1) > len(sentence2)):
-        similarity = sim / len(sentence1)
-    else:
-        similarity = sim / len(sentence2)
+    if (len(sentence1) > 0) and (len(sentence2)) > 0:
+        if(len(sentence1) > len(sentence2)):
+            similarity = sim / len(sentence1)
+        else:
+            similarity = sim / len(sentence2)
 
     return similarity
 
 
-def embeddingsSimilarity(model, words1, words2):
+def embeddingsSimilarity(model, sentence1, sentence2):
+
+    words1 = converteStringToVector(sentence1)
+    words2 = converteStringToVector(sentence2)
 
     size = 0
     if isinstance(words1, float) or isinstance(words2, float):
@@ -163,15 +171,19 @@ def sumVectors(vector1, vector2):
     return vectorSum
 
 
-def tableSimilarity(word_vectors, words1, words2):
+def tableSimilarity(word_vectors, model, words1, words2):
+
+    #words1 = converteStringToVector(sentence1)
+    #words2 = converteStringToVector(sentence2)
 
     results = np.zeros(len(words1))
     table = np.zeros((len(words1), len(words2)))
 
     #if the words are present in the vocabulary of the word2vec model, calculate the similarity using word2vec, if not, Levenshtein's similarity is calculated
+    #if (words1[l] in word_vectors.vocab) and (words2[j] in word_vectors.vocab):
     for l in range(len(words1)):
         for j in range(len(words2)):
-            if (words1[l] in word_vectors.vocab) and (words2[j] in word_vectors.vocab):
+            if (words1[l] in model.vocab) and (words2[j] in model.vocab):
                 sim = word_vectors.similarity(words1[l], words2[j])
             else:
                 sim = normalizedLevenshtein(words1[l], words2[j])
@@ -193,13 +205,26 @@ def tableSimilarity(word_vectors, words1, words2):
     #returns the average of highest values in the table
     return np.mean(results)
 
-def binarySimilarity( words1, words2):
+def converteStringToVector(text_string):
+    vector = []
+    for word in text_string.split(' '):
+        newWord = word.replace('[','').replace(']','').replace(',',':').replace('<','').replace('>','').replace(' ','').replace('!','').replace('?','').replace('-','').replace('#','').replace('@','').replace('.','')
+        vector.append(newWord)
+    return vector
 
-    results = np.zeros(len(words1))
-    table = np.zeros((len(words1), len(words2)))
+def binarySimilarity( sentence1, sentence2):
 
-    for l in range(len(words1)):
-        for j in range(len(words2)):
+    words1 = converteStringToVector(sentence1)
+    words2 = converteStringToVector(sentence2)
+
+    tam1 = len(words1)
+    tam2 = len(words2)
+
+    results = np.zeros(tam1)
+    table = np.zeros((tam1, tam2))
+
+    for l in range(tam1):
+        for j in range(tam2):
             if (words1[l] == words2[j]):
                 sim = 1.0
             else:
@@ -207,10 +232,15 @@ def binarySimilarity( words1, words2):
             table[l][j] = sim
 
     # removes row and column from highest similarity value in table
-    for k in range(len(words1)):
+    for k in range(tam1):
 
         vector = getPositionMaxValueTable(table)
-        results[k] = table[vector[0]][vector[1]]
+
+        if table[vector[0]][vector[1]] != 0. and table[vector[0]][vector[1]] != -1.:
+            results[k] = table[vector[0]][vector[1]]
+        else:
+            results[k] = 0.
+
 
         for m in range(len(table)):
             for n in range(len(table[0])):
@@ -220,7 +250,7 @@ def binarySimilarity( words1, words2):
                     table[m][vector[1]] = -1.0
 
     #retorna a média dos maiores valores da tabela
-    return np.mean(results)
+    return abs(np.mean(results))
 
 def getPositionMaxValueTable(table):
     pos = []

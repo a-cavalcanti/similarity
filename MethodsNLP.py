@@ -1,8 +1,9 @@
 import string
 import nltk
 from nltk.stem import RSLPStemmer
-#nltk.download('rslp')
-#nltk.download('stopwords')
+import nltk
+nltk.download('rslp')
+nltk.download('stopwords')
 
 def tokenize(sentence):
     sentence = sentence.lower()

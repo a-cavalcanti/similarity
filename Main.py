@@ -34,6 +34,9 @@ def featuresExtraction(dataSet):
         text = mnlp.stemming(line)
         finalDataSet.append(mnlp.convertText(text))
 
+    print(dataSet)
+    print(newDataSet)
+
     vector = Tfidf.calculateTFIDF(finalDataSet)
 
     similarities = []
@@ -51,7 +54,7 @@ def featuresExtraction(dataSet):
         featuresLine = []
 
         #calculate feature 2
-        feature2 = Word2Vec.wordOrderSimilarity(word_vectors, dataSet[x][3] , dataSet[x][4])
+        feature2 = Word2Vec.wordOrderSimilarity(word_vectors, model, dataSet[x][3] , dataSet[x][4])
 
         #calculate feature 3
         sim2 = Word2Vec.embeddingsSimilarity(model, dataSet[x][3], dataSet[x][4])
@@ -61,7 +64,7 @@ def featuresExtraction(dataSet):
             feature3 = sim2
 
         #calculate feature 4
-        sim3 = Word2Vec.calculateSimilarity(word_vectors, dataSet[x][3], dataSet[x][4])
+        sim3 = Word2Vec.calculateSimilarity(word_vectors, model, dataSet[x][3], dataSet[x][4])
         if math.isnan(sim3):
             feature4 = 1.0
         else:
